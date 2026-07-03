@@ -7,7 +7,7 @@ const PLACEHOLDER_PET_IMAGE = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3
 const SECURITY_KEY = "clinico123";
 
 // ⚠️ PASTE YOUR DEPLOYED GOOGLE APPS SCRIPT WEB APP URL HERE:
-const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbylDU-EvFZQyj1HVZXo0uM2c5ajo31a8EvCjF8FycfhZUH11p1Xf2fBDCk0uL3C4alToA/exec";
+const GOOGLE_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwb2pWSzqZk81Y9j1w3HAZGaAmLITn1NDkGYKQcFxAU3M02J7eTWmkfXJG0GBRJET55/exec";
 
 const DYNAMIC_LINK_FIELDS = [
     'xray', 'ct', 'mri', 'fluoroscopy', 'ultrasound', 'echography',
