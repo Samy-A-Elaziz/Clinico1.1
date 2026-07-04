@@ -443,57 +443,57 @@ class ClinicoApp {
             // });
 
             // Helper function to render image to canvas bypassing basic format crashes
-            const fitImageOnPage = (imgDataUrl, assetTitle) => {
-                doc.addPage();
-                // Banner header on dynamic media sheets
-                doc.setFillColor(240, 245, 245);
-                doc.rect(0, 0, 210, 20, 'F');
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(10);
-                doc.setTextColor(13, 148, 136);
-                doc.text(`Patient Asset Layer: ${assetTitle}`, 15, 13);
+            // const fitImageOnPage = (imgDataUrl, assetTitle) => {
+            //     doc.addPage();
+            //     // Banner header on dynamic media sheets
+            //     doc.setFillColor(240, 245, 245);
+            //     doc.rect(0, 0, 210, 20, 'F');
+            //     doc.setFont('helvetica', 'bold');
+            //     doc.setFontSize(10);
+            //     doc.setTextColor(13, 148, 136);
+            //     doc.text(`Patient Asset Layer: ${assetTitle}`, 15, 13);
                 
-                try {
-                    // Injecting image with fallback box scale limits
-                    doc.addImage(imgDataUrl, 'JPEG', 15, 30, 180, 240, undefined, 'FAST');
-                } catch (e) {
-                    doc.setDrawColor(220, 100, 100);
-                    doc.rect(15, 30, 180, 100);
-                    doc.setTextColor(200, 50, 50);
-                    doc.text("Failed to securely render multi-media asset directly inside the native PDF container.", 20, 50);
-                    doc.setFont('helvetica', 'normal');
-                    doc.text(`Verify external path configurations manually: ${imgDataUrl.substring(0, 65)}...`, 20, 60);
-                }
-            };
+            //     try {
+            //         // Injecting image with fallback box scale limits
+            //         doc.addImage(imgDataUrl, 'JPEG', 15, 30, 180, 240, undefined, 'FAST');
+            //     } catch (e) {
+            //         doc.setDrawColor(220, 100, 100);
+            //         doc.rect(15, 30, 180, 100);
+            //         doc.setTextColor(200, 50, 50);
+            //         doc.text("Failed to securely render multi-media asset directly inside the native PDF container.", 20, 50);
+            //         doc.setFont('helvetica', 'normal');
+            //         doc.text(`Verify external path configurations manually: ${imgDataUrl.substring(0, 65)}...`, 20, 60);
+            //     }
+            // };
 
             // Process image pipeline sequentially
-            for (const item of collectImages) {
-                if (item.src.startsWith('data:image/')) {
-                    fitImageOnPage(item.src, item.title);
-                } else {
-                    // Try parsing cross-origin safe imagery objects natively
-                    await new Promise((resolve) => {
-                        const imgEl = new Image();
-                        imgEl.crossOrigin = "Anonymous";
-                        imgEl.onload = function() {
-                            const canvas = document.createElement("canvas");
-                            canvas.width = this.width;
-                            canvas.height = this.height;
-                            const ctx = canvas.getContext("2d");
-                            ctx.drawImage(this, 0, 0);
-                            try {
-                                const dataUrl = canvas.toDataURL("image/jpeg");
-                                fitImageOnPage(dataUrl, item.title);
-                            } catch (err) {
-                                console.warn("Canvas conversion interrupted by security architecture bounds.");
-                            }
-                            resolve();
-                        };
-                        imgEl.onerror = () => { resolve(); }; // Continue loop safety trace execution
-                        imgEl.src = item.src;
-                    });
-                }
-            }
+            // for (const item of collectImages) {
+            //     if (item.src.startsWith('data:image/')) {
+            //         fitImageOnPage(item.src, item.title);
+            //     } else {
+            //         // Try parsing cross-origin safe imagery objects natively
+            //         await new Promise((resolve) => {
+            //             const imgEl = new Image();
+            //             imgEl.crossOrigin = "Anonymous";
+            //             imgEl.onload = function() {
+            //                 const canvas = document.createElement("canvas");
+            //                 canvas.width = this.width;
+            //                 canvas.height = this.height;
+            //                 const ctx = canvas.getContext("2d");
+            //                 ctx.drawImage(this, 0, 0);
+            //                 try {
+            //                     const dataUrl = canvas.toDataURL("image/jpeg");
+            //                     fitImageOnPage(dataUrl, item.title);
+            //                 } catch (err) {
+            //                     console.warn("Canvas conversion interrupted by security architecture bounds.");
+            //                 }
+            //                 resolve();
+            //             };
+            //             imgEl.onerror = () => { resolve(); }; // Continue loop safety trace execution
+            //             imgEl.src = item.src;
+            //         });
+            //     }
+            // }
 
             doc.save(`clinico_report_${rec.id || 'export'}.pdf`);
         };
