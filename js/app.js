@@ -282,6 +282,232 @@ class ClinicoApp {
         }
     }
 
+    /**
+     * Compiles and prints textual and multi-media photo layers into a single clean PDF report
+     */
+    exportPatientToPDF(id) {
+        const rec = this.runtime_db.find(r => r.id === id);
+        if (!rec) {
+            alert("Error locating requested patient record execution track.");
+            return;
+        }
+
+        const runPdfPipeline = async () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+            
+            // --- PAGE 1: TEXT DATA COMPILATION ---
+            doc.setFillColor(13, 148, 136); // Clinico Primary Teal Theme Accent
+            doc.rect(0, 0, 210, 35, 'F');
+            
+            doc.setTextColor(255, 255, 255);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(22);
+            doc.text("CLINICO MEDICAL CASE PROFILE", 15, 18);
+            
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Patient ID Reference: ${rec.id || 'N/A'}`, 15, 26);
+            doc.text(`Report Generation Date: ${new Date().toLocaleDateString()}`, 140, 26);
+
+            doc.setTextColor(40, 40, 40);
+            let yCursor = 48;
+
+            const printSectionHeader = (title) => {
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(13);
+                doc.setTextColor(13, 148, 136);
+                doc.text(title.toUpperCase(), 15, yCursor);
+                yCursor += 4;
+                doc.setDrawColor(200, 200, 200);
+                doc.line(15, yCursor, 195, yCursor);
+                yCursor += 6;
+                doc.setTextColor(60, 60, 60);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(10);
+            };
+
+            // 1. Biometrics Panel
+            printSectionHeader("1. Patient Details");
+            doc.text(`Pet Name: ${rec.petName || 'N/A'}`, 15, yCursor);
+            doc.text(`Species: ${rec.species || 'N/A'}`, 75, yCursor);
+            doc.text(`Breed: ${rec.breed || 'Unclassified'}`, 140, yCursor);
+            yCursor += 6;
+            doc.text(`Age: ${rec.age || 'N/A'} Yrs`, 15, yCursor);
+            doc.text(`Mass: ${rec.weight || 'N/A'} Kg`, 75, yCursor);
+            doc.text(`Sex: ${rec.sex || 'N/A'}`, 140, yCursor);
+            yCursor += 6;     
+            doc.text(`Neutered: ${rec.neutered || 'N/A'}`, 15, yCursor);
+            doc.text(`Agent/Owner: ${rec.ownerName || 'N/A'}`, 75, yCursor);
+            yCursor += 12;
+
+            // 2. Clinical Findings & Assessment Summary
+            printSectionHeader("2. Medical Assessment Summary");
+            const assessmentText = doc.splitTextToSize(`${rec.about || 'None documented.'}`, 180);
+            doc.text(assessmentText, 15, yCursor);
+            yCursor += (assessmentText.length * 5) + 4;
+
+            doc.setFont('helvetica', 'bold');
+            doc.text(`Complaint: ${rec.complain || 'None.'}`, 15, yCursor);
+            yCursor += 6;
+            doc.text(`Symptoms: ${rec.symptoms || 'None.'}`, 15, yCursor);
+            yCursor += 6;
+            doc.text(`Syndromes: ${rec.syndrome || 'None.'}`, 15, yCursor);
+            yCursor += 6;
+            
+            
+            doc.text(`Diagnosis: ${rec.diagnosis || 'Pending deployment.'}`, 15, yCursor);
+            yCursor += 12;
+
+            // 3. Treatment
+            printSectionHeader("3. Therapeutic / Treatment Protocol");
+            doc.setFont('helvetica', 'normal');
+            const treatmentText = doc.splitTextToSize(rec.treatment || 'No proactive execution treatment tracks configured at this juncture.', 180);
+            doc.text(treatmentText, 15, yCursor);
+            yCursor += (treatmentText.length * 5) + 12;
+
+            // 4. Asset Links Reference List
+            if (yCursor < 260) {
+                printSectionHeader("4. Medical File Attachments");
+    
+                let allLinks = [];
+                DYNAMIC_LINK_FIELDS.forEach(field => {
+                    if (Array.isArray(rec[field]) && rec[field].length > 0) {
+                        rec[field].forEach(link => {
+                            allLinks.push({ field: field.toUpperCase(), url: link });
+                        });
+                    }
+                });
+
+                if (allLinks.length === 0) {
+                    doc.text("No files attachements are registered to this patient.", 15, yCursor);
+                    yCursor += 10;
+                } else {
+                    const xPositions = [15, 75, 140];
+                    const qrSize = 30; 
+                    yCursor += 5; 
+
+                    for (let i = 0; i < allLinks.length; i++) {
+                        const item = allLinks[i];
+                        const colIndex = i % 3;
+                        const currentX = xPositions[colIndex];
+
+                        if (colIndex === 0 && yCursor > 230) {
+                            doc.addPage();
+                            yCursor = 20; 
+                        }
+
+                        // Print the label
+                        doc.text(`${item.field}:`, currentX, yCursor);
+
+                        try {
+                            // 1. Initialize synchronous QR code generator
+                            // Type 0 auto-detects size; 'M' is standard error correction
+                            var qr = qrcode(0, 'M');
+                            qr.addData(item.url);
+                            qr.make();
+                            
+                            // 2. Generate the base64 image data string directly
+                            var qrCodeDataUrl = qr.createDataURL(4); 
+                            
+                            // 3. Draw the square QR code on the PDF
+                            doc.addImage(qrCodeDataUrl, 'GIF', currentX, yCursor + 5, qrSize, qrSize);
+
+                        } catch (err) {
+                            // If it STILL errors, print the actual reason to your browser console to see it
+                            console.error("QR Code Error details:", err);
+                            doc.text("Link Error", currentX, yCursor + 15);
+                        }
+
+                        if (colIndex === 2 || i === allLinks.length - 1) {
+                            yCursor += 60; 
+                        }
+                    }
+                }
+            }
+
+            // --- PAGES 2+: SINGLE IMAGE PER PAGE ARCHITECTURE INTERCEPTOR ---
+            // const collectImages = [];
+            // if (rec.imageUrl && !rec.imageUrl.startsWith("data:image/svg+xml")) {
+            //     collectImages.push({ title: "Primary Patient Avatar Profile Photo", src: rec.imageUrl });
+            // }
+            // DYNAMIC_LINK_FIELDS.forEach(field => {
+            //     if (Array.isArray(rec[field])) {
+            //         rec[field].forEach((url, index) => {
+            //             const lowUrl = url.toLowerCase();
+            //             if (lowUrl.includes('.jpg') || lowUrl.includes('.jpeg') || lowUrl.includes('.png') || lowUrl.includes('.webp') || url.startsWith('data:image/')) {
+            //                 collectImages.push({ title: `${field.toUpperCase()} Diagnostics Scan Asset #${index + 1}`, src: url });
+            //             }
+            //         });
+            //     }
+            // });
+
+            // Helper function to render image to canvas bypassing basic format crashes
+            const fitImageOnPage = (imgDataUrl, assetTitle) => {
+                doc.addPage();
+                // Banner header on dynamic media sheets
+                doc.setFillColor(240, 245, 245);
+                doc.rect(0, 0, 210, 20, 'F');
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(10);
+                doc.setTextColor(13, 148, 136);
+                doc.text(`Patient Asset Layer: ${assetTitle}`, 15, 13);
+                
+                try {
+                    // Injecting image with fallback box scale limits
+                    doc.addImage(imgDataUrl, 'JPEG', 15, 30, 180, 240, undefined, 'FAST');
+                } catch (e) {
+                    doc.setDrawColor(220, 100, 100);
+                    doc.rect(15, 30, 180, 100);
+                    doc.setTextColor(200, 50, 50);
+                    doc.text("Failed to securely render multi-media asset directly inside the native PDF container.", 20, 50);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(`Verify external path configurations manually: ${imgDataUrl.substring(0, 65)}...`, 20, 60);
+                }
+            };
+
+            // Process image pipeline sequentially
+            for (const item of collectImages) {
+                if (item.src.startsWith('data:image/')) {
+                    fitImageOnPage(item.src, item.title);
+                } else {
+                    // Try parsing cross-origin safe imagery objects natively
+                    await new Promise((resolve) => {
+                        const imgEl = new Image();
+                        imgEl.crossOrigin = "Anonymous";
+                        imgEl.onload = function() {
+                            const canvas = document.createElement("canvas");
+                            canvas.width = this.width;
+                            canvas.height = this.height;
+                            const ctx = canvas.getContext("2d");
+                            ctx.drawImage(this, 0, 0);
+                            try {
+                                const dataUrl = canvas.toDataURL("image/jpeg");
+                                fitImageOnPage(dataUrl, item.title);
+                            } catch (err) {
+                                console.warn("Canvas conversion interrupted by security architecture bounds.");
+                            }
+                            resolve();
+                        };
+                        imgEl.onerror = () => { resolve(); }; // Continue loop safety trace execution
+                        imgEl.src = item.src;
+                    });
+                }
+            }
+
+            doc.save(`clinico_report_${rec.id || 'export'}.pdf`);
+        };
+
+        if (typeof window.jspdf === 'undefined') {
+            const scriptNode = document.createElement('script');
+            scriptNode.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+            scriptNode.onload = runPdfPipeline;
+            document.head.appendChild(scriptNode);
+        } else {
+            runPdfPipeline();
+        }
+    }
+
     renderHistory() {
         const grid = document.getElementById('history-grid');
         if (!grid) return;
@@ -366,6 +592,7 @@ class ClinicoApp {
             <div class="profile-action-header">
                 <button class="btn btn-secondary" onclick="app.switchView('history')"><i class="fa-solid fa-chevron-left"></i> Return to Registry</button>
                 <div class="profile-action-cluster">
+                    <button class="btn btn-success" onclick="app.exportPatientToPDF('${rec.id}')" style="background-color: var(--secondary, #0d9488); color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;"><i class="fa-solid fa-file-pdf"></i> Export</button>
                     <button class="btn btn-primary" onclick="app.requestSecurityAccess('EDIT', '${rec.id}')"><i class="fa-solid fa-user-gear"></i> Unlock & Edit</button>
                     <button class="btn btn-danger" onclick="app.requestSecurityAccess('DELETE', '${rec.id}')"><i class="fa-solid fa-trash-can"></i> Terminate Case</button>
                 </div>
