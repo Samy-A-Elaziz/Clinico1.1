@@ -40,12 +40,12 @@
     <div class="main-layout">
         <aside class="sidebar">
             <div class="sidebar-card data-sync-panel">
-                <h3><i class="fa-solid fa-database"></i> CSV Database Sync</h3>
-                <p class="sidebar-desc">Static deployment ecosystem. Download your `clinico.csv` system file here.</p>
+                <h3><i class="fa-solid fa-database"></i> XLSX Database Sync</h3>
+                <p class="sidebar-desc">Static deployment ecosystem. Download your `clinico.xlsx` system file here.</p>
                 <div class="sync-actions">
                     <!-- <label class="btn-sync btn-import"> -->
-                        <!-- <i class="fa-solid fa-file-import"></i> Load CSV -->
-                    <input type="file" id="csv-file-input" accept=".csv" style="display: none;">
+                        <!-- <i class="fa-solid fa-file-import"></i> Load XLSX -->
+                    <input type="file" id="xlsx-file-input" accept=".xlsx" style="display: none;">
                     <!-- </label> -->
                     <button class="btn-sync btn-export" onclick="csvEngine.exportToCSV()"><i class="fa-solid fa-file-export"></i> Save XLSX</button>
                 </div>
@@ -117,11 +117,11 @@
                                 <input type="text" id="field-ownerName" placeholder="e.g., John Doe">
                             </div>
                             <div class="form-group">
-                                <label for="field-age">Age(years) *</label>
+                                <label for="field-age">Age(year) *</label>
                                 <input type="text" id="field-age" required placeholder="e.g., 3 Years or 6 Months">
                             </div>
                             <div class="form-group">
-                                <label for="field-weight">Weight(kg) *</label>
+                                <label for="field-weight">Mass(kg) *</label>
                                 <input type="text" id="field-weight" required placeholder="e.g., 12.5 kg">
                             </div>
                             <div class="form-group">
@@ -175,32 +175,32 @@
 
                         <div class="form-grid margin-top-15">
                             <div class="form-group">
-                                <label for="field-complain">Chief Complaint</label>
+                                <label for="field-complain">Complaint</label>
                                 <textarea id="field-complain" rows="2" placeholder="Primary reason for clinical visit"></textarea>
                             </div>
                             <div class="form-group">
-                                <label for="field-symptoms">Observed Symptoms</label>
+                                <label for="field-symptoms">Symptoms</label>
                                 <textarea id="field-symptoms" rows="2" placeholder="Clinical signs noted during examination"></textarea>
                             </div>
                             <div class="form-group">
-                                <label for="field-syndrome">Syndrome Mapping</label>
+                                <label for="field-syndrome">Syndrome</label>
                                 <textarea id="field-syndrome" rows="2" placeholder="Correlated syndrome arrays if applicable"></textarea>
                             </div>
                             <div class="form-group">
-                                <label for="field-diagnosis">Working Diagnosis</label>
+                                <label for="field-diagnosis">Diagnosis</label>
                                 <textarea id="field-diagnosis" rows="2" placeholder="Differential or definitive diagnostic conclusion"></textarea>
                             </div>
                         </div>
                         <div class="form-grid-full">
                             <div class="form-group">
-                                <label for="field-treatment">Treatment Plan & Prescription Matrix</label>
+                                <label for="field-treatment">Treatment Plan & Prescription</label>
                                 <textarea id="field-treatment" rows="3" placeholder="Pharmaceutical doses, surgical actions, clinical timeline instructions..."></textarea>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-grid-section">
-                        <h3 class="section-divider"><i class="fa-solid fa-radiation"></i> Diagnostic Imaging Resource Links (Cloud URLs)</h3>
+                        <h3 class="section-divider"><i class="fa-solid fa-radiation"></i> Diagnostic Imaging(Cloud URLs)</h3>
                         <div class="dynamic-url-container">
                             <h4>Radiography Modules</h4>
                             <div id="wrapper-xray" class="link-builder-group"><label>X-ray</label></div>
@@ -216,7 +216,7 @@
                     </div>
 
                     <div class="form-grid-section">
-                        <h3 class="section-divider"><i class="fa-solid fa-flask"></i> Laboratory Pathology Matrices</h3>
+                        <h3 class="section-divider"><i class="fa-solid fa-flask"></i> Laboratory Pathology Reports</h3>
                         <div class="dynamic-url-container">
                             <div id="wrapper-cbc" class="link-builder-group"><label>Complete Blood Count (CBC)</label></div>
                             <div id="wrapper-biochemistry" class="link-builder-group"><label>Clinical Biochemistry</label></div>
@@ -227,7 +227,7 @@
                     </div>
 
                     <div class="form-grid-section">
-                        <h3 class="section-divider"><i class="fa-solid fa-paperclip"></i> Structured External Documentation</h3>
+                        <h3 class="section-divider"><i class="fa-solid fa-paperclip"></i> Attachement Documentation</h3>
                         <div class="dynamic-url-container">
                             <div id="wrapper-pdf" class="link-builder-group"><label>PDF Clinical Briefs</label></div>
                             <div id="wrapper-word" class="link-builder-group"><label>Word Manuscripts (.docx)</label></div>
@@ -302,7 +302,8 @@
         </div>
     </footer>
 
-    <script src="js/csv.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/xlsx.js"></script>
+    <script src="js/test.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 </body>
 </html>
