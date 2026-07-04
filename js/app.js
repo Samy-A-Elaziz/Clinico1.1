@@ -330,8 +330,8 @@ class ClinicoApp {
                     </div>
                     <p class="card-preview-text"><strong>Summary:</strong> ${rec.about}</p>
                     <div class="card-meta-bottom">
-                        <span><i class="fa-solid fa-weight-hanging"></i> Mass: <strong>${rec.weight}</strong></span>
-                        <span><i class="fa-solid fa-cake-candles"></i> Chronology: <strong>${rec.age}</strong></span>
+                        <span><i class="fa-solid fa-weight-hanging"></i> Mass(Kg): <strong>${rec.weight}</strong></span>
+                        <span><i class="fa-solid fa-cake-candles"></i> Age(year): <strong>${rec.age}</strong></span>
                         <span><i class="fa-solid fa-user"></i> Agent: <strong>${rec.ownerName || 'N/A'}</strong></span>
                     </div>
                 </div>
@@ -385,11 +385,11 @@ class ClinicoApp {
 
                     <div class="vitals-list-panel">
                         <h4><i class="fa-solid fa-fingerprint"></i> Biometric Profile</h4>
-                        <div class="vital-row"><span class="vital-label">Taxonomy:</span><span class="vital-value">${rec.species}</span></div>
-                        <div class="vital-row"><span class="vital-label">Breed Class:</span><span class="vital-value">${rec.breed || 'Unclassified'}</span></div>
-                        <div class="vital-row"><span class="vital-label">Chronology:</span><span class="vital-value">${rec.age}</span></div>
-                        <div class="vital-row"><span class="vital-label">Mass Metrics:</span><span class="vital-value">${rec.weight}</span></div>
-                        <div class="vital-row"><span class="vital-label">Sex Assignment:</span><span class="vital-value">${rec.sex}</span></div>
+                        <div class="vital-row"><span class="vital-label">Type:</span><span class="vital-value">${rec.species}</span></div>
+                        <div class="vital-row"><span class="vital-label">Breed:</span><span class="vital-value">${rec.breed || 'Unclassified'}</span></div>
+                        <div class="vital-row"><span class="vital-label">Age(year):</span><span class="vital-value">${rec.age}</span></div>
+                        <div class="vital-row"><span class="vital-label">Mass(Kg)(Kg):</span><span class="vital-value">${rec.weight}</span></div>
+                        <div class="vital-row"><span class="vital-label">Sex:</span><span class="vital-value">${rec.sex}</span></div>
                         <div class="vital-row"><span class="vital-label">Neutered Status:</span><span class="vital-value">${rec.neutered}</span></div>
                         <div class="vital-row"><span class="vital-label">Owner/Agent:</span><span class="vital-value">${rec.ownerName || 'N/A'}</span></div>
                     </div>
@@ -398,28 +398,28 @@ class ClinicoApp {
                 <div class="profile-main-report">
                     <div class="clinical-block-card">
                         <h3><i class="fa-solid fa-clipboard-list"></i> Clinical Assessment History</h3>
-                        <p class="narrative-p"><strong>Background & Traits:</strong>\n${rec.about}</p>
+                        <p class="narrative-p"><strong>Assessment:</strong>\n${rec.about}</p>
                     </div>
 
                     <div class="clinical-block-card">
-                        <h3><i class="fa-solid fa-stethoscope"></i> Symptom Profile & Diagnosis Matrix</h3>
+                        <h3><i class="fa-solid fa-stethoscope"></i> Symptom Profile & Diagnosis</h3>
                         <div class="clinical-subgrid">
-                            <div class="subgrid-cell"><h4>Chief Complaint</h4><p>${rec.complain || 'None documented.'}</p></div>
-                            <div class="subgrid-cell"><h4>Observed Symptoms</h4><p>${rec.symptoms || 'None recorded.'}</p></div>
-                            <div class="subgrid-cell"><h4>Syndrome Map Matrix</h4><p>${rec.syndrome || 'None isolated.'}</p></div>
-                            <div class="subgrid-cell"><h4>Working Diagnosis</h4><p style="color: var(--secondary); font-weight: 600;">${rec.diagnosis || 'Pending configuration.'}</p></div>
+                            <div class="subgrid-cell"><h4>Complaint</h4><p>${rec.complain || 'None documented.'}</p></div>
+                            <div class="subgrid-cell"><h4>Symptoms</h4><p>${rec.symptoms || 'None recorded.'}</p></div>
+                            <div class="subgrid-cell"><h4>Syndrome</h4><p>${rec.syndrome || 'None isolated.'}</p></div>
+                            <div class="subgrid-cell"><h4>Diagnosis</h4><p style="color: var(--secondary); font-weight: 600;">${rec.diagnosis || 'Pending configuration.'}</p></div>
                         </div>
                     </div>
 
                     <div class="clinical-block-card">
-                        <h3><i class="fa-solid fa-kit-medical"></i> Therapeutic Execution Protocols</h3>
+                        <h3><i class="fa-solid fa-kit-medical"></i>Therapeutic / Treatment Protocols</h3>
                         <p class="narrative-p" style="border-left-color: var(--accent);">${rec.treatment || 'No clinical intervention tracks configured at this juncture.'}</p>
                     </div>
 
                     <div class="clinical-block-card">
-                        <h3><i class="fa-solid fa-folder-tree"></i> Cloud Diagnostics Asset Matrix</h3>
+                        <h3><i class="fa-solid fa-folder-tree"></i> Cloud Diagnostics Data</h3>
                         <div class="asset-link-matrix">
-                            <div class="asset-card-node"><h4>X-Ray Array Links</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.xray)}</div></div>
+                            <div class="asset-card-node"><h4>X-Ray</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.xray)}</div></div>
                             <div class="asset-card-node"><h4>Computed Tomography (CT)</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.ct)}</div></div>
                             <div class="asset-card-node"><h4>Magnetic Resonance Imaging (MRI)</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.mri)}</div></div>
                             <div class="asset-card-node"><h4>Fluoroscopy Stream Array</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.fluoroscopy)}</div></div>
@@ -431,10 +431,10 @@ class ClinicoApp {
                     <div class="clinical-block-card">
                         <h3><i class="fa-solid fa-microscope"></i> Pathology Laboratory Manifests</h3>
                         <div class="asset-link-matrix">
-                            <div class="asset-card-node"><h4>CBC Panels</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.cbc)}</div></div>
-                            <div class="asset-card-node"><h4>Clinical Biochemistry</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.biochemistry)}</div></div>
-                            <div class="asset-card-node"><h4>Urinalysis Metrics</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.urinalysis)}</div></div>
-                            <div class="asset-card-node"><h4>Cytology Array Logs</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.cytology)}</div></div>
+                            <div class="asset-card-node"><h4>CBC</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.cbc)}</div></div>
+                            <div class="asset-card-node"><h4>Biochemistry</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.biochemistry)}</div></div>
+                            <div class="asset-card-node"><h4>Urinalysis</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.urinalysis)}</div></div>
+                            <div class="asset-card-node"><h4>Cytology</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.cytology)}</div></div>
                         </div>
                         <div class="asset-card-node" style="margin-top: 16px;">
                             <h4><i class="fa-solid fa-vial"></i> Alternative Specialized Labs</h4>
@@ -445,10 +445,10 @@ class ClinicoApp {
                     <div class="clinical-block-card">
                         <h3><i class="fa-solid fa-paperclip"></i> Documentation & Structured Attachments</h3>
                         <div class="asset-link-matrix">
-                            <div class="asset-card-node"><h4>PDF Clinical Bulletins</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.pdf)}</div></div>
-                            <div class="asset-card-node"><h4>Word Manuscripts (.docx)</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.word)}</div></div>
-                            <div class="asset-card-node"><h4>Excel Analytical Sheets (.xlsx)</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.excel)}</div></div>
-                            <div class="asset-card-node"><h4>External Vault Manifests</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.externalFiles)}</div></div>
+                            <div class="asset-card-node"><h4>PDF Clinical Files</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.pdf)}</div></div>
+                            <div class="asset-card-node"><h4>Word Files (.docx)</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.word)}</div></div>
+                            <div class="asset-card-node"><h4>Excel Sheets (.xlsx)</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.excel)}</div></div>
+                            <div class="asset-card-node"><h4>External Files</h4><div class="asset-hyperlinks-list">${buildHyperlinkNodes(rec.externalFiles)}</div></div>
                         </div>
                     </div>
                 </div>
